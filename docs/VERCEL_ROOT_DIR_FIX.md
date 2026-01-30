@@ -1,114 +1,71 @@
-# Vercel Root Directory Configuration Fix
+# URGENT: Vercel Dashboard Configuration Fix
 
-## 🔧 Issue Identified
+## 🚨 The Problem
 
-You set **Root Directory** to `frontend/web` in the Vercel dashboard, which is correct! However, this conflicts with the `vercel.json` build commands that include `cd frontend/web`.
+You have **Root Directory** set to `frontend/web` in Vercel dashboard, which is **overriding** the `vercel.json` file. This causes Vercel to ignore the JSON configuration.
 
-When you set a root directory in Vercel:
-- Vercel **starts** in that directory
-- Build commands run **from** that directory
-- You don't need `cd frontend/web` anymore
+## ✅ Quick Fix (2 minutes)
 
-## ✅ Fix Applied
+### Option 1: Clear Root Directory (Recommended)
 
-I've updated `vercel.json` to remove the `cd frontend/web` commands:
+1. **Go to Vercel Project Settings**
+   - Click **Settings** tab
+   - Go to **General** section
 
-**Old (incorrect with root directory set):**
-```json
-{
-  "buildCommand": "cd frontend/web && npm install && npm run build",
-  "outputDirectory": "frontend/web/dist"
-}
-```
-
-**New (correct with root directory = frontend/web):**
-```json
-{
-  "buildCommand": "npm install && npm run build",
-  "outputDirectory": "dist"
-}
-```
-
-## 🚀 Next Steps
-
-### Option 1: Keep Root Directory Setting (Recommended)
-
-1. **Push the updated vercel.json:**
-   ```bash
-   git add vercel.json
-   git commit -m "Fix vercel.json for root directory configuration"
-   git push origin main
-   ```
-
-2. **Redeploy in Vercel:**
-   - Go to Deployments tab
-   - Click **Redeploy** on the latest deployment
-   - Build should succeed now!
-
-### Option 2: Remove Root Directory Setting
-
-If you prefer to use the original `vercel.json`:
-
-1. **In Vercel Dashboard:**
-   - Go to Settings → General
-   - Find **Root Directory**
-   - Clear it (set back to `./`)
-   - Save changes
-
-2. **Revert vercel.json** (I can do this if you want)
+2. **Clear Root Directory**
+   - Find **Root Directory** field
+   - Click **Edit**
+   - **Clear the field** (make it empty or set to `./`)
+   - Click **Save**
 
 3. **Redeploy**
+   - Go to **Deployments** tab
+   - Click **Redeploy** on latest
+   - This will use the `vercel.json` configuration
+
+### Option 2: Manual Dashboard Configuration
+
+If you prefer to keep Root Directory set:
+
+1. **Go to Settings → Build & Development Settings**
+
+2. **Override the commands manually:**
+   - **Build Command**: `npm install && npm run build`
+   - **Output Directory**: `dist`
+   - **Install Command**: `npm install`
+
+3. **Save and Redeploy**
 
 ---
 
-## 📋 Current Configuration Summary
+## 🎯 Recommended Approach
 
-With the fix applied, your Vercel setup is:
-
-| Setting | Value | Location |
-|---------|-------|----------|
-| **Root Directory** | `frontend/web` | Dashboard |
-| **Build Command** | `npm install && npm run build` | vercel.json |
-| **Output Directory** | `dist` | vercel.json |
-| **Install Command** | `npm install` | vercel.json |
-| **Framework** | `Vite` | Auto-detected |
-
-## ✅ Environment Variables
-
-You already set these correctly:
-- ✅ `VITE_API_URL` = `https://resto-restaurant-website-mvp.onrender.com`
-- ✅ `VITE_APP_NAME` = `RestaurantBot AI`
-
-## 🎯 Expected Result
-
-After pushing the updated `vercel.json` and redeploying:
-
-1. ✅ Build will start in `frontend/web` directory
-2. ✅ Dependencies install correctly
-3. ✅ Vite builds the app
-4. ✅ Output goes to `dist/` (relative to `frontend/web`)
-5. ✅ Deployment succeeds!
+**Use Option 1** - Clear the root directory and let `vercel.json` handle everything. This is cleaner and version-controlled.
 
 ---
 
-## 🔍 Verification
+## 📋 After Fixing
 
-Successful build logs should show:
+The build should succeed with logs showing:
 
 ```
 Running "vercel build"
-Vercel CLI 50.5.2
-
 > Build Command: npm install && npm run build
 
 Installing dependencies...
-added 245 packages
-
 Building application...
-vite v4.3.9 building for production...
-✓ built in 12s
+✓ built successfully
 
 Build Completed
 ```
 
-No more "command not found" or path errors!
+---
+
+## 🆘 Still Failing?
+
+If it still fails after clearing root directory, the `vercel.json` might not be detected. In that case:
+
+1. **Delete the Vercel project completely**
+2. **Re-import from GitHub**
+3. **Don't set any root directory**
+4. **Let Vercel auto-detect from `vercel.json`**
