@@ -1,0 +1,1 @@
+exports.detectAnomaly = (data) => false;

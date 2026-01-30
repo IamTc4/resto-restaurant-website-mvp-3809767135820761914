@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Savoria - Authentic Flavors, Delivered. Order online now.">
+    <title>Savoria Restaurant</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">Savoria</div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#menu">Menu</a></li>
+                <li><a href="#" onclick="alert('Checkout integration pending in this demo')"><i class="fas fa-shopping-cart"></i> <span id="cart-count">0</span></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Taste the Difference</h1>
+            <p>Fresh ingredients, authentic recipes, delivered to your doorstep.</p>
+            <a href="#menu" class="btn btn-primary" style="margin-top: 1rem;">View Menu</a>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="menu-section">
+        <h2 class="section-title">Our Menu</h2>
+
+        <!-- Categories Filter (Visual only for now) -->
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <button class="btn btn-primary">All</button>
+            <button class="btn" style="background:white; border:1px solid #ddd;">Starters</button>
+            <button class="btn" style="background:white; border:1px solid #ddd;">Main Course</button>
+            <button class="btn" style="background:white; border:1px solid #ddd;">Desserts</button>
+        </div>
+
+        <div class="menu-grid" id="menu-container">
+            <!-- Menu items injected here -->
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Savoria Restaurant. <a href="dashboard.html" style="color: #bbb; text-decoration: none;">Admin</a></p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="assets/js/menu.js"></script>
+    <script src="assets/js/main.js"></script>
+
+    <!-- Chatbot Scripts -->
+    <script src="assets/js/restaurant-bot.js"></script>
+    <script src="assets/js/chat-widget.js"></script>
+
+</body>
+</html>

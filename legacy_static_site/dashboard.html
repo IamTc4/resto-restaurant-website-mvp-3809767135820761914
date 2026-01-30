@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin dashboard for Savoria Restaurant. View sales trends, popular items, and order history.">
+    <title>Savoria - Dashboard</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .chart-container {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .data-controls {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">Savoria</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#menu">Menu</a></li>
+                <li><a href="cart.html"><i class="fas fa-shopping-cart"></i> <span id="cart-count">0</span></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container" id="login-section">
+        <h2 class="section-title">Admin Login</h2>
+        <div style="max-width: 400px; margin: 0 auto; text-align: center; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <p style="margin-bottom: 1rem;">Enter password to access dashboard</p>
+            <input type="password" id="admin-password" placeholder="Password" style="width: 100%; padding: 0.8rem; margin-bottom: 1rem; border: 1px solid #ddd; border-radius: 4px;">
+            <button class="btn btn-primary" onclick="checkLogin()" style="width: 100%;">Login</button>
+            <p id="login-error" style="color: red; margin-top: 1rem; display: none;">Invalid Password</p>
+            <p style="color: #ccc; font-size: 0.8rem; margin-top: 1rem;">(Hint: admin123)</p>
+        </div>
+    </div>
+
+    <div class="container" id="dashboard-content" style="display: none;">
+        <h2 class="section-title">Admin Dashboard</h2>
+
+        <div class="data-controls">
+            <button class="btn btn-primary btn-sm" onclick="resetData()">Reset Demo Data</button>
+            <button class="btn btn-sm" style="background: #e74c3c; color: white;" onclick="logout()">Logout</button>
+        </div>
+
+        <!-- Add New Dish Section -->
+        <div class="container" style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+            <h3 style="margin-bottom: 1rem; color: var(--primary-color);">Add New Dish</h3>
+            <form onsubmit="event.preventDefault(); addDish();" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <input type="text" id="dish-name" placeholder="Dish Name" required style="padding: 0.8rem; border: 1px solid #ddd; border-radius: 4px;">
+                <select id="dish-category" style="padding: 0.8rem; border: 1px solid #ddd; border-radius: 4px;">
+                    <option value="Starters">Starters</option>
+                    <option value="Main Course">Main Course</option>
+                    <option value="Desserts">Desserts</option>
+                    <option value="Drinks">Drinks</option>
+                </select>
+                <input type="number" id="dish-price" placeholder="Price" step="0.01" required style="padding: 0.8rem; border: 1px solid #ddd; border-radius: 4px;">
+                <input type="text" id="dish-image" placeholder="Image URL (optional)" style="padding: 0.8rem; border: 1px solid #ddd; border-radius: 4px;">
+                <input type="text" id="dish-desc" placeholder="Description" style="padding: 0.8rem; border: 1px solid #ddd; border-radius: 4px; grid-column: 1 / -1;">
+                <button type="submit" class="btn btn-primary" style="grid-column: 1 / -1;">Add Dish</button>
+            </form>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <h3>Total Orders</h3>
+                <div class="value" id="total-orders">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Revenue</h3>
+                <div class="value" id="total-revenue">$0.00</div>
+            </div>
+            <div class="stat-card">
+                <h3>Avg. Order Value</h3>
+                <div class="value" id="avg-order-value">$0.00</div>
+            </div>
+            <div class="stat-card">
+                <h3>Most Popular Item</h3>
+                <div class="value" id="popular-item" style="font-size: 1.2rem;">-</div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="chart-container">
+                <h3>Sales Trends (Last 7 Days)</h3>
+                <canvas id="salesChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Category Distribution</h3>
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h3>Top Menu Items</h3>
+            <canvas id="topItemsChart" style="max-height: 300px;"></canvas>
+        </div>
+
+        <div class="chart-container">
+             <h3>Recent Orders</h3>
+             <div style="overflow-x: auto;">
+                 <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                     <thead>
+                         <tr style="background: #f8f9fa; text-align: left;">
+                             <th style="padding: 10px;">ID</th>
+                             <th style="padding: 10px;">Date</th>
+                             <th style="padding: 10px;">Items</th>
+                             <th style="padding: 10px;">Total</th>
+                         </tr>
+                     </thead>
+                     <tbody id="orders-table-body">
+                         <!-- Rows injected via JS -->
+                     </tbody>
+                 </table>
+             </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Savoria Restaurant. All rights reserved.</p>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/dashboard.js"></script>
+    <script>
+        // Simple Auth Logic
+        function checkSession() {
+            if (sessionStorage.getItem('isAdmin') === 'true') {
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('dashboard-content').style.display = 'block';
+                // Trigger chart rendering if needed, though dashboard.js runs on DOMContentLoaded
+                // We might need to ensure charts render properly if they were hidden
+            } else {
+                document.getElementById('login-section').style.display = 'block';
+                document.getElementById('dashboard-content').style.display = 'none';
+            }
+        }
+
+        function checkLogin() {
+            const password = document.getElementById('admin-password').value;
+            if (password === 'admin123') {
+                sessionStorage.setItem('isAdmin', 'true');
+                checkSession();
+            } else {
+                document.getElementById('login-error').style.display = 'block';
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('isAdmin');
+            checkSession();
+        }
+
+        // Run check on load
+        checkSession();
+
+        // Enter key support
+        document.getElementById('admin-password').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkLogin();
+            }
+        });
+    </script>
+</body>
+</html>
