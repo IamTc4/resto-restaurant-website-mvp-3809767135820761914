@@ -1,0 +1,8 @@
+name = "resto-restaurant-mvp"
+pages_build_output_dir = "frontend/web/dist"
+
+[build]
+command = "cd frontend/web && npm install && npm run build"
+
+[env.production]
+NODE_VERSION = "18"
