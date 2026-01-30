@@ -1,5 +1,17 @@
 # Hosting Guide - RestaurantBot AI (Free Tier)
 
+> [!IMPORTANT]
+> **If you're getting "Cannot find package.json" errors on Render:**
+> 
+> The `render.yaml` file only works for NEW services created via Blueprint. If you created your service manually, you need to update the **Root Directory** setting:
+> 
+> 1. Go to your Render service → **Settings**
+> 2. Find **Root Directory** field
+> 3. Set it to: **`backend`**
+> 4. Click **Save Changes** and redeploy
+> 
+> See [RENDER_FIX.md](file:///c:/work/resto-restaurant-website-mvp-3809767135820761914/docs/RENDER_FIX.md) for detailed instructions.
+
 Complete step-by-step guide to deploy your restaurant AI application using free hosting platforms.
 
 ---
